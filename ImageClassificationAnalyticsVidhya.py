@@ -13,7 +13,8 @@ import os
 import numpy as np
 import pandas as pd
 
-labels = ['h', 'g','b','s']
+labels = ['h','s','b','g']
+
 img_size = 224
 
 def get_data(data_dir):
@@ -30,22 +31,22 @@ def get_data(data_dir):
                 print(e)
     return np.array(data)
 
-train = get_data('..\Autopack\PAH\PAH FFT LF Label')
-val = get_data('..\Autopack\Initial Data\Initial LF FFT Label')
+train = get_data('..\Autopack\PAH\PAH .png')
+val = get_data('..\Autopack\Initial Data\Initial .png')
 
-l = []
-for i in train:
-    if(i[1] == 0):
-        l.append("h")
-    elif(i[1] == 0):
-        l.append("g")
-    elif(i[1] == 0):
-        l.append("b")
-    else:
-        l.append("b")
+# l = []
+# for i in train:
+#     if(i[1] == 0):
+#         l.append("h")
+#     elif(i[1] == 0):
+#         l.append("s")
+#     elif(i[1] == 0):
+#         l.append("b")
+#     else:
+#         l.append("g")
     
-sns.set_style('darkgrid')
-sns.countplot(l)
+# sns.set_style('darkgrid')
+# sns.countplot(l)
 
 # plt.figure(figsize = (5,5))
 # plt.imshow(train[1][0])
@@ -110,17 +111,17 @@ model.add(Dense(128,activation="relu"))
 model.add(Dense(4, activation="softmax"))
 model.summary()
 
-opt = Adam(lr=0.000001)
+opt = Adam(lr=0.0001)
 model.compile(optimizer = opt , loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True) , metrics = ['accuracy'])
 
-history = model.fit(x_train,y_train,epochs = 3 , validation_data = (x_val, y_val))
+history = model.fit(x_train,y_train,epochs = 50 , validation_data = (x_val, y_val))
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
-epochs_range = range(3)
+epochs_range = range(50)
 
 plt.figure(figsize=(15, 15))
 plt.subplot(2, 2, 1)
@@ -138,4 +139,4 @@ plt.show()
 
 predictions = model.predict_classes(x_val)
 predictions = predictions.reshape(1,-1)[0]
-print(classification_report(y_val, predictions, target_names = ['h (Class 0)','g (Class 1)','b (Class 2)', 's (Class 3)']))
+print(classification_report(y_val, predictions, target_names = ['h (Class 0)','s (Class 1)','b (Class 2)','b (Class 3)']))
